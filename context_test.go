@@ -12,8 +12,8 @@ import (
 func testingApp() *iris.Application {
     app := iris.New()
 
-    app.Get("/dummy", From(dummyEndpoint))
-    app.Get("/dummy-fail", From(dummyFailEndpoint))
+    app.Get("/dummy", For(dummyEndpoint))
+    app.Get("/dummy-fail", For(dummyFailEndpoint))
 
     return app
 }

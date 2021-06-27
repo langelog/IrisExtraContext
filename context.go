@@ -8,7 +8,7 @@ type Context struct {
     iris.Context
 }
 
-func From(f func(Context)) iris.Handler {
+func For(f func(Context)) iris.Handler {
     return func(ctx iris.Context) {
         f(Context{Context: ctx})
     }
