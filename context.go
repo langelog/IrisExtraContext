@@ -2,6 +2,8 @@ package context
 
 import (
     "github.com/kataras/iris/v12"
+    "encoding/json"
+    "errors"
 )
 
 type Context struct {
@@ -20,5 +22,12 @@ func (ctx Context) SetUser(user interface{}) {
 
 func (ctx Context) GetUser() interface{} {
     return ctx.Values().Get("user")
+}
+
+func (ctx Context) ParseBody(targetStructure interface{}) error {
+    if err := json.NewDecoder(ctx.Request().Body).Decode(targetStructure); err != nil {
+        return errors.New("could not parse input")
+    }
+    return nil
 }
 

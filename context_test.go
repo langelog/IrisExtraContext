@@ -10,7 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func testingApp() *iris.Application {
+// --
+
+func appTestResponseBuilder() *iris.Application {
     app := iris.New()
 
     app.Get("/dummy", For(dummyEndpoint))
@@ -32,7 +34,7 @@ func dummyFailEndpoint(ctx Context) {
 
 func TestResponseBuilder(t *testing.T) {
 
-    app := testingApp()
+    app := appTestResponseBuilder()
     e := httptest.New(t, app)
 
     // check for simple message response building
@@ -75,5 +77,52 @@ func TestUserSetGet(t *testing.T) {
     // check
     assert.True(t, ok)
     assert.Equal(t, "Peter", user.Name)
+}
+
+// --
+
+func appTestBodyParsing() *iris.Application {
+    app := iris.New()
+
+    app.Post("/dummy-body", For(dummyBodyEndpoint))
+
+    return app
+}
+
+type DummyRequest struct {
+    Name string `json:"name"`
+}
+
+func dummyBodyEndpoint(ctx Context) {
+    sampleRequest := DummyRequest{}
+    if err := ctx.ParseBody(&sampleRequest); err != nil {
+        ctx.BuildResponse(iris.StatusBadRequest).Entry("error", "please provide body").Send()
+        return
+    }
+
+    ctx.BuildResponse(iris.StatusOK).Entry("name", sampleRequest.Name).Send()
+}
+
+
+func TestBodyParsing(t *testing.T) {
+    // simulating context
+    app := appTestBodyParsing()
+    e := httptest.New(t, app)
+
+    // check for simple message response building
+    e.POST("/dummy-body").WithJSON(Msg{
+        "name": "Peter",
+    }).Expect().
+        Status(iris.StatusOK).
+        JSON(httpexpect.ContentOpts{MediaType: "application/json"}).
+        Object().
+            Value("name").Equal("Peter")
+
+    e.POST("/dummy-body").WithText("{\"name\": \"\"Peter\"}").WithHeader("Content-Type", "application/json").Expect().
+        Status(iris.StatusBadRequest).
+        JSON(httpexpect.ContentOpts{MediaType: "application/json"}).
+        Object().
+            Value("error").Equal("please provide body")
+
 }
 
