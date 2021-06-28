@@ -14,3 +14,11 @@ func For(f func(Context)) iris.Handler {
     }
 }
 
+func (ctx Context) SetUser(user interface{}) {
+    ctx.Values().Set("user", user)
+}
+
+func (ctx Context) GetUser() interface{} {
+    return ctx.Values().Get("user")
+}
+

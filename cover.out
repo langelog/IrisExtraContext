@@ -1,6 +1,8 @@
 mode: set
 github.com/langelog/IrisExtraContext/context.go:11.40,12.35 1 1
 github.com/langelog/IrisExtraContext/context.go:12.35,14.6 1 1
+github.com/langelog/IrisExtraContext/context.go:17.46,19.2 1 1
+github.com/langelog/IrisExtraContext/context.go:21.42,23.2 1 1
 github.com/langelog/IrisExtraContext/response.go:13.63,19.2 1 1
 github.com/langelog/IrisExtraContext/response.go:21.90,24.2 2 1
 github.com/langelog/IrisExtraContext/response.go:26.47,28.66 2 1
